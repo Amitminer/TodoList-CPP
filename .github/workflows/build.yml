@@ -1,0 +1,124 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - dev
+    tags:
+      - 'v*'  # Trigger on tags starting with 'v'
+
+jobs:
+  build-and-release-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+      
+    - name: Install Conan
+      run: |
+        python -m pip install --upgrade pip
+        pip install conan
+        conan profile detect
+      
+    - name: Install CMake
+      run: sudo apt-get install cmake
+
+    - name: Giving Permission
+      run: chmod +x build.sh
+      
+    - name: Run build script
+      run: ./build.sh
+      
+    - name: Upload Linux executable
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-executable
+        path: todolist
+
+  build-and-release-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Conan
+      run: |
+        python -m pip install --upgrade pip
+        pip install conan
+        conan profile detect
+      
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        .\bootstrap-vcpkg.bat
+        .\vcpkg.exe integrate install
+        dir
+        
+    - name: Install SQLiteCpp using vcpkg
+      run: |
+        cd vcpkg
+        .\vcpkg.exe install sqlitecpp
+      
+    - name: Run build script
+      run: .\build.bat
+      
+    - name: Upload Windows executable
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-executable
+        path: D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe
+
+  create-release:
+    needs: [build-and-release-linux, build-and-release-windows]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')  # Run only if tag starts with 'v'
+
+    steps:
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: linux-executable
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: windows-executable
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Linux Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./linux-executable/todolist
+          asset_name: todolist
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./windows-executable/todolist.exe
+          asset_name: todolist.exe
+          asset_content_type: application/octet-stream
