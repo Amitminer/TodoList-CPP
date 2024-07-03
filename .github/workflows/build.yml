@@ -99,5 +99,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
           files: |
-            ./linux-executable/todolist
-            ./windows-executable/todolist.exe
+            ./linux-executable.zip
+            ./windows-executable.zip
