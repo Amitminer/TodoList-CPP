@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-executable
-          path: todolist
+          path: todolist.zip
 
   build-and-release-windows:
     runs-on: windows-latest
@@ -93,12 +93,30 @@ jobs:
           name: windows-executable
 
       - name: Create Release
+        uses: actions/create-release@v1
         id: create_release
-        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
-          files: |
-            "D:/a/TodoList-CPP/TodoList-CPP/todolist"
-            "D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe"
-            
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+
+      - name: Upload Linux Release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: linux-executable/todolist.zip
+          asset_name: todolist-linux.zip
+          asset_content_type: application/zip
+
+      - name: Upload Windows Release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: windows-executable/todolist-windows.zip
+          asset_name: todolist-windows.zip
+          asset_content_type: application/zip
