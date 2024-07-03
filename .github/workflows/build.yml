@@ -11,10 +11,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
       
@@ -34,7 +34,7 @@ jobs:
       run: ./build.sh
       
     - name: Upload Linux executable
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: linux-executable
         path: todolist
@@ -44,7 +44,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install Conan
       run: |
@@ -69,7 +69,7 @@ jobs:
       run: .\build.bat
       
     - name: Upload Windows executable
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: windows-executable
         path: D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe
@@ -77,16 +77,15 @@ jobs:
   create-release:
     needs: [build-and-release-linux, build-and-release-windows]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')  # Run only if tag starts with 'v'
 
     steps:
       - name: Download Linux artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: linux-executable
 
       - name: Download Windows artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: windows-executable
 
@@ -99,7 +98,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
-          prerelease: false
+          prerelease: true
 
       - name: Upload Linux Release Asset
         uses: actions/upload-release-asset@v1
