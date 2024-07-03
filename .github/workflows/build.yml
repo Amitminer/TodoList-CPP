@@ -10,69 +10,69 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
       
-    - name: Install Conan
-      run: |
-        python -m pip install --upgrade pip
-        pip install conan
-        conan profile detect
+      - name: Install Conan
+        run: |
+          python -m pip install --upgrade pip
+          pip install conan
+          conan profile detect
       
-    - name: Install CMake
-      run: sudo apt-get install cmake
+      - name: Install CMake
+        run: sudo apt-get install cmake
 
-    - name: Giving Permission
-      run: chmod +x build.sh
+      - name: Giving Permission
+        run: chmod +x build.sh
       
-    - name: Run build script
-      run: ./build.sh
+      - name: Run build script
+        run: ./build.sh
       
-    - name: Upload Linux executable
-      uses: actions/upload-artifact@v4
-      with:
-        name: linux-executable
-        path: todolist
+      - name: Upload Linux executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-executable
+          path: todolist
 
   build-and-release-windows:
     runs-on: windows-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Install Conan
-      run: |
-        python -m pip install --upgrade pip
-        pip install conan
-        conan profile detect
+      - name: Install Conan
+        run: |
+          python -m pip install --upgrade pip
+          pip install conan
+          conan profile detect
       
-    - name: Install vcpkg
-      run: |
-        git clone https://github.com/microsoft/vcpkg.git
-        cd vcpkg
-        .\bootstrap-vcpkg.bat
-        .\vcpkg.exe integrate install
-        dir
+      - name: Install vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          .\bootstrap-vcpkg.bat
+          .\vcpkg.exe integrate install
+          dir
         
-    - name: Install SQLiteCpp using vcpkg
-      run: |
-        cd vcpkg
-        .\vcpkg.exe install sqlitecpp
+      - name: Install SQLiteCpp using vcpkg
+        run: |
+          cd vcpkg
+          .\vcpkg.exe install sqlitecpp
       
-    - name: Run build script
-      run: .\build.bat
+      - name: Run build script
+        run: .\build.bat
       
-    - name: Upload Windows executable
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-executable
-        path: D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-executable
+          path: D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe
 
   create-release:
     needs: [build-and-release-linux, build-and-release-windows]
@@ -89,14 +89,18 @@ jobs:
         with:
           name: windows-executable
 
+      - name: Extract Tag Name
+        id: extract_tag
+        run: echo "::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.extract_tag.outputs.TAG_NAME }}
+          release_name: Release ${{ steps.extract_tag.outputs.TAG_NAME }}
           draft: false
           prerelease: true
 
