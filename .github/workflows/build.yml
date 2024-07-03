@@ -35,6 +35,9 @@ jobs:
       - name: Run build script
         run: ./build.sh
       
+      - name: Zip Linux executable
+        run: zip todolist.zip todolist
+      
       - name: Upload Linux executable
         uses: actions/upload-artifact@v4
         with:
@@ -70,11 +73,14 @@ jobs:
       - name: Run build script
         run: .\build.bat
       
+      - name: Zip Windows executable
+        run: powershell Compress-Archive -Path D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe -DestinationPath todolist-windows.zip
+      
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
         with:
           name: windows-executable
-          path: D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe
+          path: todolist-windows.zip
 
   create-release:
     needs: [build-and-release-linux, build-and-release-windows]
@@ -101,7 +107,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
 
-      - name: Upload Linux Release assets
+      - name: Upload Release assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
