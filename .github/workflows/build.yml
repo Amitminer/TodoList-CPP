@@ -89,18 +89,15 @@ jobs:
         with:
           name: windows-executable
 
-      - name: Extract Tag Name
-        id: extract_tag
-        run: echo "::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}"
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        
         with:
-          tag_name: ${{ steps.extract_tag.outputs.TAG_NAME }}
-          release_name: Release ${{ steps.extract_tag.outputs.TAG_NAME }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           draft: false
           prerelease: true
 
