@@ -99,5 +99,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
           files: |
-            D:/a/TodoList-CPP/TodoList-CPP/todolist
-            D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe
+            "D:/a/TodoList-CPP/TodoList-CPP/todolist"
+            "D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe"
+            
