@@ -25,9 +25,12 @@ public:
     // Delete a task by its ID.
     void deleteTask(int id);
 
+    // Clear all tasks data from the database.
+    void clearAllData();
+
 private:
     Database &database;      // Reference to the Database
-    std::vector<Task> tasks; // Vector of tasks
+    std::vector<Task> tasks; // Vector to store tasks
 };
 
 #endif // TASKMANAGER_H

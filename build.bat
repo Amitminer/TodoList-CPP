@@ -19,10 +19,15 @@ if %errorlevel% neq 0 (
     goto :error
 )
 
+REM Define the generator variable
+set "generator=MinGW Makefiles"
+
 REM Run CMake configuration
 echo Running CMake configuration...
 cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE="%cd%\conan_toolchain.cmake" -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release
+
+REM choose desired generators
+cmake .. -DCMAKE_TOOLCHAIN_FILE="%cd%\conan_toolchain.cmake" -G "%generator%" -DCMAKE_BUILD_TYPE=Release
 if %errorlevel% neq 0 (
     echo CMake configuration failed.
     cd ..

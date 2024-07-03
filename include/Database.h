@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "Task.h"
+
+// SQLiteCpp is a C++ library for accessing SQLite databases
 #include <SQLiteCpp/SQLiteCpp.h>
 
 // Database class handles saving and loading tasks to/from a SQLite database.
