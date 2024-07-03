@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - dev
+    tags:
+      - 'v*'  # Trigger on tags starting with 'v'
 
 jobs:
   build-and-release-linux:
@@ -77,6 +79,7 @@ jobs:
   create-release:
     needs: [build-and-release-linux, build-and-release-windows]
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Download Linux artifact
@@ -89,32 +92,12 @@ jobs:
         with:
           name: windows-executable
 
-  
-
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
         env:
-          token: ${{ secrets.PAT_TOKEN }}
-        if: startsWith(github.ref, 'refs/tags/')
-
-
-      - name: Upload Linux Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./linux-executable/todolist
-          asset_name: todolist
-          asset_content_type: application/octet-stream
-
-      - name: Upload Windows Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./windows-executable/todolist.exe
-          asset_name: todolist.exe
-          asset_content_type: application/octet-stream
+          files: |
+            ./linux-executable/todolist
+            ./windows-executable/todolist.exe
