@@ -33,15 +33,12 @@ jobs:
       
       - name: Run build script
         run: ./build.sh
-
-      - name: Zip Linux executable
-        run: zip todolist.zip todolist
       
       - name: Upload Linux executable
         uses: actions/upload-artifact@v4
         with:
-          name: linux-executable
-          path: todolist.zip
+          name: todolist-linux.zip
+          path: todolist
 
   build-and-release-windows:
     runs-on: windows-latest
@@ -72,56 +69,46 @@ jobs:
       - name: Run build script
         run: .\build.bat
       
-      - name: Zip Windows executable
-        run: powershell Compress-Archive -Path D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe -DestinationPath todolist-windows.zip
-      
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
         with:
-          name: windows-executable
-          path: todolist-windows.zip
+          name: todolist-windows.zip
+          path: D:/a/TodoList-test/TodoList-test/build/Release/todolist.exe
 
   create-release:
     needs: [build-and-release-linux, build-and-release-windows]
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Download Linux artifact
         uses: actions/download-artifact@v4
         with:
-          name: linux-executable
+          name: todolist-linux.zip
+          path: todolist-linux
 
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: windows-executable
+          name: todolist-windows.zip
+          path: todolist-windows
+      
+      - name: Make a zip file
+        run: |
+          zip -rj todolist-windows.zip todolist-windows/
+          zip -rj todolist-linux.zip todolist-linux/
+      
 
-      - name: Create Release
-        uses: actions/create-release@v1
+      - name: Publish Release
+        uses: ncipollo/release-action@v1.14.0
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
-          tag_name: ${{ github.run_number }}
-          release_name: "Build #${{ github.run_number }}"
+          token: ${{ secrets.PAT_TOKEN}}
+          artifacts: |
+            ${{ github.workspace }}/todolist-linux.zip
+            ${{ github.workspace }}/todolist-windows.zip
+          name: Build v${{ github.run_number }}
+          tag: "v${{ github.run_number }}"      
           prerelease: true
-
-      - name: Upload Linux Release assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: linux-executable/todolist.zip
-          asset_name: todolist-linux.zip
-          asset_content_type: application/zip
-
-      - name: Upload Windows Release assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: windows-executable/todolist-windows.zip
-          asset_name: todolist-windows.zip
-          asset_content_type: application/zip
