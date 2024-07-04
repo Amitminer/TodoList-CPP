@@ -73,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: todolist-windows.zip
-          path: D:/a/TodoList-test/TodoList-CPP/build/Release/todolist.exe
+          path: D:/a/TodoList-CPP/TodoList-CPP/build/Release/todolist.exe
 
   create-release:
     needs: [build-and-release-linux, build-and-release-windows]
