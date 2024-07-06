@@ -76,6 +76,11 @@ void TaskManager::listTasks() const
  */
 void TaskManager::markTaskDone(int id)
 {
+    if (id < 1 || id > tasks.size())
+    {
+        std::cerr << "Invalid task ID." << std::endl;
+        return;
+    }
     database.markTaskDone(id);
     tasks = database.getTasks();
 }

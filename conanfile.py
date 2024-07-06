@@ -6,7 +6,7 @@ class MyProjectConan(ConanFile):
     name = "todo-list"
     version = "1.6"
     settings = "os", "compiler", "build_type", "arch"
-    requires = ("sqlitecpp/3.3.1",)
+    requires = ("sqlitecpp/3.3.1")
     generators = "CMakeToolchain", "CMakeDeps"
 
     def layout(self):

@@ -2,6 +2,7 @@
 #include "Database.h"
 #include "ColorManager.hpp" // Include ColorManager.hpp for terminal colors
 #include <iostream>
+#include <limits> // for std::numeric_limits
 
 /**
  * @brief Main function for the Todo List CLI application.
@@ -13,8 +14,8 @@
  */
 int main()
 {
-    Database database("tasks.db");     // Initialize database with tasks.db
-    TaskManager taskManager(database); // Initialize TaskManager with database
+    Database database("tasks.db");
+    TaskManager taskManager(database); 
 
     int choice;
     do
@@ -35,7 +36,16 @@ int main()
         std::cout << "6. " << ColorManager::BRIGHT_RED << "Clear All Data\n"
                   << ColorManager::RESET;
         std::cout << "Enter your choice: ";
-        std::cin >> choice;
+
+        // Input validation
+        while (!(std::cin >> choice) || choice < 1 || choice > 6)
+        {
+            std::cin.clear();                                                   // clear input buffer to restore cin to a usable state
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // ignore bad input
+            std::cout << ColorManager::RED << "Invalid choice. Please enter a number between 1 and 6.\n"
+                      << ColorManager::RESET;
+            std::cout << "Enter your choice: ";
+        }
         std::cin.ignore();
 
         switch (choice)
@@ -70,13 +80,14 @@ int main()
         case 5:
             std::cout << ColorManager::MAGENTA << "Tasks saved. Exiting...\n"
                       << ColorManager::RESET;
-            return 0; // Exit the program immediately after displaying the exit message
+            return 0; // Exit the program
         case 6:
             taskManager.clearAllData();
             std::cout << ColorManager::BRIGHT_RED << "All tasks cleared.\n"
                       << ColorManager::RESET;
             break;
         default:
+            // This case is actually handled by input validation, but keeping for completeness
             std::cout << ColorManager::RED << "Invalid choice. Try again.\n"
                       << ColorManager::RESET;
         }

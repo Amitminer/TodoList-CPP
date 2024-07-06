@@ -8,7 +8,7 @@
 class Task
 {
 public:
-    // Constructor to initialize a Task with an id, description, and done status.
+    // Constructor to initialize a Task with an id, description, done status, creation time, and completion time.
     Task(int id, const std::string &description, bool done, time_t createdTime, time_t completedTime);
 
     // Getter for the task ID.
@@ -29,7 +29,7 @@ public:
     // Getter for the time when the task was completed.
     time_t getCompletedTime() const;
 
-    // Setter for the time when the task was created.
+    // Setter for the time when the task was completed.
     void setCompletedTime(time_t time);
 
 private:

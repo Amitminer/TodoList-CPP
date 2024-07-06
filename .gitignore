@@ -33,3 +33,7 @@
 
 #vscode settings..
 .vscode
+debug.bat
+
+build
+tasks.db
