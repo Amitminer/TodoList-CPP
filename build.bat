@@ -43,7 +43,7 @@ set "generator=Visual Studio 17 2022"
 
 REM Run CMake configuration
 echo Running CMake configuration...
-cmake .. -G "%generator%" -DCMAKE_BUILD_TYPE=Release
+cmake .. -G "%generator%" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
 if errorlevel 1 (
     echo CMake configuration failed.
     cd ..
