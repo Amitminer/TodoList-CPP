@@ -1,5 +1,27 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
+
+REM Install vcpkg if not already installed
+if not exist vcpkg (
+    echo Installing vcpkg...
+    git clone https://github.com/microsoft/vcpkg.git
+    cd vcpkg
+    call bootstrap-vcpkg.bat
+    if errorlevel 1 (
+        echo Failed to install vcpkg.
+        cd ..
+        goto :error
+    )
+    cd ..
+)
+
+REM Install SQLiteCpp using vcpkg
+echo Installing SQLiteCpp...
+vcpkg\vcpkg install sqlitecpp:x64-windows
+if errorlevel 1 (
+    echo Failed to install SQLiteCpp.
+    goto :error
+)
 
 REM Clean the build directory if it exists
 if exist build (
@@ -11,25 +33,17 @@ if exist build (
     )
 )
 
-REM Create build directory and install dependencies using Conan
-echo Creating build directory and installing dependencies...
-conan install . --output-folder=build --build=missing
-if %errorlevel% neq 0 (
-    echo Conan install failed.
-    goto :error
-)
+REM Create build directory
+mkdir build
+cd build
 
 REM Define the generator variable
-REM Visual Studio 17 2022 or MinGW Makefiles
 set "generator=Visual Studio 17 2022"
 
 REM Run CMake configuration
 echo Running CMake configuration...
-cd build
-
-REM choose desired generators
-cmake .. -DCMAKE_TOOLCHAIN_FILE="%cd%\conan_toolchain.cmake" -G "%generator%" -DCMAKE_BUILD_TYPE=Release
-if %errorlevel% neq 0 (
+cmake .. -G "%generator%" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+if errorlevel 1 (
     echo CMake configuration failed.
     cd ..
     goto :error
@@ -39,29 +53,30 @@ cd ..
 REM Build the project using CMake
 echo Building the project...
 cmake --build build --config Release
-if %errorlevel% neq 0 (
+if errorlevel 1 (
     echo Build failed.
     goto :error
 )
 
-REM Optionally, move the executable to the root directory
-REM echo Checking for Release\todolist.exe...
-REM if exist build\Release\todolist.exe (
-REM     echo Moving todolist.exe to the root directory...
-REM     copy build\Release\todolist.exe .
-REM     if errorlevel 1 (
-REM         echo Failed to move todolist.exe.
-REM         goto :error
-REM     )
-REM ) else (
-REM     echo todolist.exe not found in Release directory.
-REM     goto :error
-REM )
+echo Checking for build\Release\todolist.exe...
+if exist build\Release\todolist.exe (
+    echo Moving todolist.exe to the root directory...
+    copy build\Release\todolist.exe . 
+    if errorlevel 1 (
+        echo Failed to move todolist.exe.
+        goto :error
+    )
+) else (
+    echo todolist.exe not found in build\Release directory.
+    goto :error
+)
 
 echo Script completed successfully
 goto :end
 
 :error
 echo An error occurred during script execution
+exit /b 1
+
 :end
 endlocal
