@@ -6,7 +6,7 @@ if not exist vcpkg (
     echo Installing vcpkg...
     git clone https://github.com/microsoft/vcpkg.git
     cd vcpkg
-    ./bootstrap-vcpkg.bat
+    call bootstrap-vcpkg.bat
     if errorlevel 1 (
         echo Failed to install vcpkg.
         cd ..
