@@ -2,7 +2,8 @@
 #include "Database.h"
 #include "ColorManager.hpp" // Include ColorManager.hpp for terminal colors
 #include <iostream>
-#include <limits> // for std::numeric_limits
+#include <limits>     // for std::numeric_limits
+#include <fmt/core.h> // fmt library for formatted output
 
 /**
  * @brief Main function for the Todo List CLI application.
@@ -15,36 +16,29 @@
 int main()
 {
     Database database("tasks.db");
-    TaskManager taskManager(database); 
+    TaskManager taskManager(database);
 
     int choice;
     do
     {
-        // Display the menu with color
-        std::cout << ColorManager::CYAN << "\nTodo List Menu\n"
-                  << ColorManager::RESET;
-        std::cout << "1. " << ColorManager::GREEN << "Add Task\n"
-                  << ColorManager::RESET;
-        std::cout << "2. " << ColorManager::YELLOW << "List Tasks\n"
-                  << ColorManager::RESET;
-        std::cout << "3. " << ColorManager::BLUE << "Mark Task as Done\n"
-                  << ColorManager::RESET;
-        std::cout << "4. " << ColorManager::RED << "Delete Task\n"
-                  << ColorManager::RESET;
-        std::cout << "5. " << ColorManager::MAGENTA << "Save and Exit\n"
-                  << ColorManager::RESET;
-        std::cout << "6. " << ColorManager::BRIGHT_RED << "Clear All Data\n"
-                  << ColorManager::RESET;
-        std::cout << "Enter your choice: ";
+        // Display the menu with color using fmt for formatted output
+        fmt::print("{}\nTodo List Menu\n{}\n", ColorManager::CYAN, ColorManager::RESET);
+        fmt::print("1. {}Add Task{}\n", ColorManager::GREEN, ColorManager::RESET);
+        fmt::print("2. {}List Tasks{}\n", ColorManager::YELLOW, ColorManager::RESET);
+        fmt::print("3. {}Mark Task as Done{}\n", ColorManager::BLUE, ColorManager::RESET);
+        fmt::print("4. {}Delete Task{}\n", ColorManager::RED, ColorManager::RESET);
+        fmt::print("5. {}Save and Exit{}\n", ColorManager::MAGENTA, ColorManager::RESET);
+        fmt::print("6. {}Clear All Data{}\n", ColorManager::BRIGHT_RED, ColorManager::RESET);
+        fmt::print("Enter your choice: ");
 
         // Input validation
         while (!(std::cin >> choice) || choice < 1 || choice > 6)
         {
             std::cin.clear();                                                   // clear input buffer to restore cin to a usable state
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // ignore bad input
-            std::cout << ColorManager::RED << "Invalid choice. Please enter a number between 1 and 6.\n"
-                      << ColorManager::RESET;
-            std::cout << "Enter your choice: ";
+            fmt::print("{}Invalid choice. Please enter a number between 1 and 6.\n{}",
+                       ColorManager::RED, ColorManager::RESET);
+            fmt::print("Enter your choice: ");
         }
         std::cin.ignore();
 
@@ -53,7 +47,7 @@ int main()
         case 1:
         {
             std::string description;
-            std::cout << "Enter task description: ";
+            fmt::print("Enter task description: ");
             std::getline(std::cin, description);
             taskManager.addTask(description);
             break;
@@ -64,7 +58,7 @@ int main()
         case 3:
         {
             int id;
-            std::cout << "Enter task number to mark as done: ";
+            fmt::print("Enter task number to mark as done: ");
             std::cin >> id;
             taskManager.markTaskDone(id);
             break;
@@ -72,24 +66,21 @@ int main()
         case 4:
         {
             int id;
-            std::cout << "Enter task number to delete: ";
+            fmt::print("Enter task number to delete: ");
             std::cin >> id;
             taskManager.deleteTask(id);
             break;
         }
         case 5:
-            std::cout << ColorManager::MAGENTA << "Tasks saved. Exiting...\n"
-                      << ColorManager::RESET;
+            fmt::print("{}Tasks saved. Exiting...\n{}", ColorManager::MAGENTA, ColorManager::RESET);
             return 0; // Exit the program
         case 6:
             taskManager.clearAllData();
-            std::cout << ColorManager::BRIGHT_RED << "All tasks cleared.\n"
-                      << ColorManager::RESET;
+            fmt::print("{}All tasks cleared.\n{}", ColorManager::BRIGHT_RED, ColorManager::RESET);
             break;
         default:
             // This case is actually handled by input validation, but keeping for completeness
-            std::cout << ColorManager::RED << "Invalid choice. Try again.\n"
-                      << ColorManager::RESET;
+            fmt::print("{}Invalid choice. Try again.\n{}", ColorManager::RED, ColorManager::RESET);
         }
     } while (choice != 5);
 

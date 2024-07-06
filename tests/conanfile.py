@@ -3,15 +3,12 @@ from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
 
 
 class MyProjectConan(ConanFile):
-    name = "todo-list"
+    name = "todolist-benchmarks"
     version = "1.7.5"
     license = "MIT"
     settings = "os", "compiler", "build_type", "arch"
     requires = ("sqlitecpp/3.3.1", "fmt/11.0.0", "benchmark/1.8.4")
     generators = "CMakeToolchain", "CMakeDeps"
-
-    def layout(self):
-        self.folders.build = "build"
 
     def build(self):
         cmake = CMake(self)
