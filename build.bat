@@ -1,32 +1,5 @@
 @echo off
-<<<<<<< HEAD
-setlocal
-=======
 setlocal enabledelayedexpansion
-
-REM Install vcpkg if not already installed
-if not exist vcpkg (
-    echo Installing vcpkg...
-    git clone https://github.com/microsoft/vcpkg.git
-    cd vcpkg
-    call bootstrap-vcpkg.bat
-    if errorlevel 1 (
-        echo Failed to install vcpkg.
-        cd ..
-        goto :error
-    )
-    cd ..
-)
-
-REM Install SQLiteCpp using vcpkg
-echo Installing SQLiteCpp...
-vcpkg\vcpkg.exe integrate install
-vcpkg\vcpkg.exe install sqlitecpp
-if errorlevel 1 (
-    echo Failed to install SQLiteCpp.
-    goto :error
-)
->>>>>>> f83afcee42c7762ec8d1932edfa1f0135653dcb6
 
 REM Clean the build directory if it exists
 if exist build (
