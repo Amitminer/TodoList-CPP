@@ -6,7 +6,7 @@ if not exist vcpkg (
     echo Installing vcpkg...
     git clone https://github.com/microsoft/vcpkg.git
     cd vcpkg
-    call bootstrap-vcpkg.bat
+    ./bootstrap-vcpkg.bat
     if errorlevel 1 (
         echo Failed to install vcpkg.
         cd ..
@@ -17,7 +17,8 @@ if not exist vcpkg (
 
 REM Install SQLiteCpp using vcpkg
 echo Installing SQLiteCpp...
-vcpkg\vcpkg install sqlitecpp:x64-windows
+vcpkg\vcpkg.exe integrate install
+vcpkg\vcpkg.exe install sqlitecpp
 if errorlevel 1 (
     echo Failed to install SQLiteCpp.
     goto :error
@@ -42,7 +43,7 @@ set "generator=Visual Studio 17 2022"
 
 REM Run CMake configuration
 echo Running CMake configuration...
-cmake .. -G "%generator%" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake .. -G "%generator%" -DCMAKE_BUILD_TYPE=Release
 if errorlevel 1 (
     echo CMake configuration failed.
     cd ..
