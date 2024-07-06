@@ -21,7 +21,7 @@ if %errorlevel% neq 0 (
 
 REM Define the generator variable
 REM Visual Studio 17 2022 or MinGW Makefiles
-set "generator=MinGW Makefiles"
+set "generator=Visual Studio 17 2022"
 
 REM Run CMake configuration
 echo Running CMake configuration...

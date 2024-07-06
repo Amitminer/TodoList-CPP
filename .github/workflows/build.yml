@@ -69,8 +69,9 @@ jobs:
           path: todolist-windows
       - name: Create zip files
         run: |
-          zip -j todolist-linux.zip todolist-linux/todolist
-          zip -j todolist-windows.zip todolist-windows/todolist.exe
+          zip -rj todolist-windows.zip todolist-windows/
+          zip -rj todolist-linux.zip todolist-linux/
+          
       - uses: ncipollo/release-action@v1.14.0
         with:
           artifacts: "todolist-linux.zip,todolist-windows.zip"
