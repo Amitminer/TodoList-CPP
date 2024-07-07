@@ -10,8 +10,7 @@
  * This class encapsulates information about a task, including its ID, description,
  * completion status, and timestamps for creation and completion.
  */
-class Task
-{
+class Task {
 private:
     int id;                  ///< Unique identifier for the task.
     std::string description; ///< Description of the task.

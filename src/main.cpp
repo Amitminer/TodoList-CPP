@@ -29,9 +29,9 @@ void clearAllData(TaskManager &taskManager);
  *
  * @return 0 on successful completion.
  */
-int main()
-{
-    std::string filename = "tasks.db"; // Path of the database file
+
+int main() {
+    string filename = "tasks.db"; // Path of the database file
     Database database(filename);
 
     TaskManager taskManager(database);
@@ -50,20 +50,20 @@ int main()
         case 2:
             listTasks(taskManager);
             break;
-        case 3:
+        case 3: 
             markTaskDone(taskManager);
             break;
         case 4:
             deleteTask(taskManager);
             break;
         case 5:
-            fmt::print("{}Tasks saved. Exiting...\n{}", ColorManager::MAGENTA, ColorManager::RESET);
+            print("{}Tasks saved. Exiting...\n{}", Color::MAGENTA(), Color::RESET());
             break;
         case 6:
             clearAllData(taskManager);
             break;
         default:
-            fmt::print("{}Invalid choice. Try again.\n{}", ColorManager::RED, ColorManager::RESET);
+            print("{}Invalid choice. Try again.\n{}", Color::RED(), Color::RESET());
         }
     } while (choice != 5);
 
@@ -73,17 +73,16 @@ int main()
 /**
  * @brief Displays the menu for the Todo List application.
  */
-void displayMenu()
-{
+void displayMenu() {
     // Display the menu with color using fmt for formatted output
-    fmt::print("{}\nTodo List Menu\n{}\n", ColorManager::CYAN, ColorManager::RESET);
-    fmt::print("1. {}Add Task{}\n", ColorManager::GREEN, ColorManager::RESET);
-    fmt::print("2. {}List Tasks{}\n", ColorManager::YELLOW, ColorManager::RESET);
-    fmt::print("3. {}Mark Task as Done{}\n", ColorManager::BLUE, ColorManager::RESET);
-    fmt::print("4. {}Delete Task{}\n", ColorManager::RED, ColorManager::RESET);
-    fmt::print("5. {}Save and Exit{}\n", ColorManager::MAGENTA, ColorManager::RESET);
-    fmt::print("6. {}Clear All Data{}\n", ColorManager::BRIGHT_RED, ColorManager::RESET);
-    fmt::print("Enter your choice: ");
+    print("{}\nTodo List Menu\n{}\n", Color::CYAN(), Color::RESET());
+    print("1. {}Add Task{}\n", Color::GREEN(), Color::RESET());
+    print("2. {}List Tasks{}\n", Color::YELLOW(), Color::RESET());
+    print("3. {}Mark Task as Done{}\n", Color::BLUE(), Color::RESET());
+    print("4. {}Delete Task{}\n", Color::RED(), Color::RESET());
+    print("5. {}Save and Exit{}\n", Color::MAGENTA(), Color::RESET());
+    print("6. {}Clear All Data{}\n", Color::BRIGHT_RED(), Color::RESET());
+    print("Enter your choice: ");
 }
 
 /**
@@ -91,8 +90,7 @@ void displayMenu()
  *
  * @return The user's choice as an integer.
  */
-int getUserChoice()
-{
+int getUserChoice() {
     int choice;
 
     // Input validation
@@ -100,9 +98,9 @@ int getUserChoice()
     {
         std::cin.clear();                                                   // clear input buffer to restore cin to a usable state
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // ignore bad input
-        fmt::print("{}Invalid choice. Please enter a number between 1 and 6.\n{}",
-                   ColorManager::RED, ColorManager::RESET);
-        fmt::print("Enter your choice: ");
+        print("{}Invalid choice. Please enter a number between 1 and 6.\n{}",
+                   Color::RED(), Color::RESET());
+        print("Enter your choice: ");
     }
     std::cin.ignore();
 
@@ -114,10 +112,9 @@ int getUserChoice()
  *
  * @param taskManager Reference to the TaskManager object.
  */
-void addTask(TaskManager &taskManager)
-{
+void addTask(TaskManager &taskManager) {
     std::string description;
-    fmt::print("Enter task description: ");
+    print("Enter task description: ");
     std::getline(std::cin, description);
 
     // Asynchronously add task
@@ -133,8 +130,7 @@ void addTask(TaskManager &taskManager)
  *
  * @param taskManager Reference to the TaskManager object.
  */
-void listTasks(TaskManager &taskManager)
-{
+void listTasks(TaskManager &taskManager) {
     // Asynchronously list tasks
     auto listTasksFuture = async(launch::async, [&]()
                                  { return taskManager.listTasksAsync(); });
@@ -148,10 +144,9 @@ void listTasks(TaskManager &taskManager)
  *
  * @param taskManager Reference to the TaskManager object.
  */
-void markTaskDone(TaskManager &taskManager)
-{
+void markTaskDone(TaskManager &taskManager) {
     int id;
-    fmt::print("Enter task number to mark as done: ");
+    print("Enter task number to mark as done: ");
     std::cin >> id;
 
     // Asynchronously mark task as done
@@ -167,10 +162,9 @@ void markTaskDone(TaskManager &taskManager)
  *
  * @param taskManager Reference to the TaskManager object.
  */
-void deleteTask(TaskManager &taskManager)
-{
+void deleteTask(TaskManager &taskManager) {
     int id;
-    fmt::print("Enter task number to delete: ");
+    print("Enter task number to delete: ");
     std::cin >> id;
 
     // Asynchronously delete task
@@ -186,8 +180,7 @@ void deleteTask(TaskManager &taskManager)
  *
  * @param taskManager Reference to the TaskManager object.
  */
-void clearAllData(TaskManager &taskManager)
-{
+void clearAllData(TaskManager &taskManager) {
     // Asynchronously clear all tasks
     auto clearAllDataFuture = async(launch::async, [&]()
                                     { return taskManager.clearAllDataAsync(); });
@@ -195,5 +188,5 @@ void clearAllData(TaskManager &taskManager)
     // Wait for the task to complete before continuing
     clearAllDataFuture.get();
 
-    fmt::print("{}All tasks cleared.\n{}", ColorManager::BRIGHT_RED, ColorManager::RESET);
+    print("{}All tasks cleared.\n{}", Color::BRIGHT_RED(), Color::RESET());
 }

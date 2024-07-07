@@ -17,8 +17,7 @@ using std::future;
  * database, providing asynchronous methods for non-blocking
  * database access.
  */
-class Database
-{
+class Database {
 
 public:
     /**

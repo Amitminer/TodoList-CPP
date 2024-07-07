@@ -1,36 +1,5 @@
-
-// OLD METHOD
-Running P:\Amit\Programming\CPP\TodoList-CPP\debug\todolist_benchmark.exe
-Run on (8 X 2496 MHz CPU s)
-CPU Caches:
-  L1 Data 48 KiB (x4)
-  L1 Instruction 32 KiB (x4)
-  L2 Unified 1280 KiB (x4)
-  L3 Unified 10240 KiB (x1)
-
------------------------------------------------------
-Benchmark           Time             CPU   Iterations
------------------------------------------------------
-BM_AddTask    3119670 ns       328125 ns         1000
-PS P:\Amit\Programming\CPP\TodoList-CPP> 
-
-// Async METHOD
-Running P:\Amit\Programming\CPP\TodoList-CPP\debug\todolist_benchmark.exe
-Run on (8 X 2496 MHz CPU s)
-CPU Caches:
-  L1 Data 48 KiB (x4)
-  L1 Instruction 32 KiB (x4)
-  L2 Unified 1280 KiB (x4)
-  L3 Unified 10240 KiB (x1)
------------------------------------------------------
-Benchmark           Time             CPU   Iterations
------------------------------------------------------
-BM_AddTask    3042825 ns        0.000 ns         1000
-PS P:\Amit\Programming\CPP\TodoList-CPP> 
-
-// Just updated Async METHOD
 PS P:\Amit\Programming\CPP\TodoList-CPP> & "p:\Amit\Programming\CPP\TodoList-CPP\debug\todolist_benchmark.exe"
-2024-07-07T10:49:51+05:30
+2024-07-07T22:10:46+05:30
 Running P:\Amit\Programming\CPP\TodoList-CPP\debug\todolist_benchmark.exe
 Run on (8 X 2496 MHz CPU s)
 CPU Caches:
@@ -41,5 +10,5 @@ CPU Caches:
 -----------------------------------------------------
 Benchmark           Time             CPU   Iterations
 -----------------------------------------------------
-BM_AddTask    3037379 ns        15625 ns         1000
+BM_AddTask    3041614 ns        15625 ns         1000
 PS P:\Amit\Programming\CPP\TodoList-CPP>

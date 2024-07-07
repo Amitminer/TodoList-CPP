@@ -10,9 +10,9 @@
 using std::future;
 using std::vector;
 using std::string;
+
 // TaskManager class manages a collection of tasks and interacts with the database.
-class TaskManager
-{
+class TaskManager {
 public:
     // Constructor to initialize TaskManager with a reference to the Database.
     TaskManager(Database &db);
