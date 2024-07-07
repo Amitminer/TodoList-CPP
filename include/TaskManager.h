@@ -9,7 +9,7 @@
 
 using std::future;
 using std::vector;
-
+using std::string;
 // TaskManager class manages a collection of tasks and interacts with the database.
 class TaskManager
 {
