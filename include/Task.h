@@ -4,40 +4,84 @@
 #include <string>
 #include <ctime>
 
-// Task class represents a single task with a description and a completion status.
+/**
+ * @brief Represents a Task in the Todo List.
+ *
+ * This class encapsulates information about a task, including its ID, description,
+ * completion status, and timestamps for creation and completion.
+ */
 class Task
 {
-public:
-    // Constructor to initialize a Task with an id, description, done status, creation time, and completion time.
-    Task(int id, const std::string &description, bool done, time_t createdTime, time_t completedTime);
+private:
+    int id;                  ///< Unique identifier for the task.
+    std::string description; ///< Description of the task.
+    bool done;               ///< Flag indicating whether the task is completed.
+    time_t createdTime;      ///< Timestamp indicating when the task was created.
+    time_t completedTime;    ///< Timestamp indicating when the task was completed.
 
-    // Getter for the task ID.
+public:
+    /**
+     * @brief Constructor to initialize a Task object.
+     *
+     * @param id The unique identifier for the task.
+     * @param description The description of the task.
+     * @param done Boolean indicating whether the task is completed.
+     * @param createdTime Timestamp when the task was created.
+     * @param completedTime Timestamp when the task was completed (default: 0).
+     */
+    Task(int id, const std::string &description, bool done, time_t createdTime, time_t completedTime = 0);
+
+    /**
+     * @brief Destructor to clean up resources associated with the Task.
+     */
+    ~Task();
+
+    /**
+     * @brief Gets the unique identifier of the task.
+     *
+     * @return The ID of the task.
+     */
     int getId() const;
 
-    // Getter for the task description.
+    /**
+     * @brief Gets the description of the task.
+     *
+     * @return The description of the task.
+     */
     std::string getDescription() const;
 
-    // Check if the task is done.
+    /**
+     * @brief Checks if the task is completed.
+     *
+     * @return True if the task is completed, false otherwise.
+     */
     bool isDone() const;
 
-    // Mark the task as done.
+    /**
+     * @brief Marks the task as done and sets the completion time.
+     */
     void markDone();
 
-    // Getter for the time when the task was created.
+    /**
+     * @brief Gets the timestamp when the task was created.
+     *
+     * @return The creation time of the task.
+     */
     time_t getCreatedTime() const;
 
-    // Getter for the time when the task was completed.
+    /**
+     * @brief Gets the timestamp when the task was completed.
+     *
+     * @return The completion time of the task.
+     */
     time_t getCompletedTime() const;
 
-    // Setter for the time when the task was completed.
+    /**
+     * @brief Sets the completion time of the task.
+     *
+     * @param time The completion time to set.
+     */
     void setCompletedTime(time_t time);
-
-private:
-    int id;                  // Unique task ID
-    std::string description; // Task description
-    bool done;               // Task completion status
-    time_t createdTime;      // Time when the task was created
-    time_t completedTime;    // Time when the task was completed
 };
 
 #endif // TASK_H

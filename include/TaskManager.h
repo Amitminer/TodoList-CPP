@@ -5,6 +5,10 @@
 #include <string>
 #include "Task.h"
 #include "Database.h"
+#include <future> // For std::future
+
+using std::future;
+using std::vector;
 
 // TaskManager class manages a collection of tasks and interacts with the database.
 class TaskManager
@@ -13,24 +17,24 @@ public:
     // Constructor to initialize TaskManager with a reference to the Database.
     TaskManager(Database &db);
 
-    // Add a new task.
-    void addTask(const std::string &description);
+    // Asynchronous addition of a new task with the given description.
+    future<void> addTaskAsync(const string &description);
 
-    // List all tasks.
-    void listTasks() const;
+    // Asynchronous listing of all tasks.
+    future<void> listTasksAsync() const;
 
-    // Mark a task as done by its ID.
-    void markTaskDone(int id);
+    // Asynchronous marking of a task as done by its ID.
+    future<void> markTaskDoneAsync(int id);
 
-    // Delete a task by its ID.
-    void deleteTask(int id);
+    // Asynchronous deletion of a task by its ID.
+    future<void> deleteTaskAsync(int id);
 
-    // Clear all tasks data from the database.
-    void clearAllData();
+    // Asynchronous clearing of all tasks data from the database.
+    future<void> clearAllDataAsync();
 
 private:
-    Database &database;      // Reference to the Database
-    std::vector<Task> tasks; // Vector to store tasks
+    Database &database; // Reference to the Database
+    vector<Task> tasks; // Vector to store tasks
 };
 
 #endif // TASKMANAGER_H

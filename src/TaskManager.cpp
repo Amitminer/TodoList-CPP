@@ -3,6 +3,12 @@
 #include <iostream>
 #include <iomanip> // for put_time
 #include <ctime>
+#include <future> // Add <future> header for std::async and std::launch
+
+using std::async;
+using std::future;
+using std::launch;
+using std::string;
 
 /**
  * @brief Constructor to initialize TaskManager with a reference to the Database.
@@ -11,103 +17,177 @@
  */
 TaskManager::TaskManager(Database &db) : database(db)
 {
-    tasks = database.getTasks();
+    auto futureTasks = database.getTasksAsync();
+    futureTasks.wait();
+    tasks = futureTasks.get();
 }
 
 /**
- * @brief Add a new task with the given description.
+ * @brief Asynchronous addition of a new task with the given description.
  *
- * Adds a new task to the database using the Database object and updates the internal tasks list.
+ * Adds a new task to the database asynchronously using the Database object and updates the internal tasks list.
  *
  * @param description Description of the task to be added.
+ * @return Future object for the add task operation.
  */
-void TaskManager::addTask(const std::string &description)
+future<void> TaskManager::addTaskAsync(const string &description)
 {
-    database.addTask(description);
-    tasks = database.getTasks();
+    return async(launch::async, [this, description]()
+                 {
+        try
+        {
+            // Add task asynchronously
+            auto future = database.addTaskAsync(description);
+            future.wait(); // Wait for the asynchronous operation to complete
+            // Update tasks asynchronously after addition
+            auto futureTasks = database.getTasksAsync();
+            futureTasks.wait();
+            tasks = futureTasks.get();
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << "Error adding task asynchronously: " << e.what() << std::endl;
+            throw; // Rethrow the exception to propagate it further
+        } });
 }
 
 /**
- * @brief List all tasks with their IDs, descriptions, status (done or not done), and timestamps.
+ * @brief Asynchronous listing of all tasks with their IDs, descriptions, status (done or not done), and timestamps.
  *
- * Lists all tasks from the internal tasks list. Uses ColorManager to display colored output.
+ * Lists all tasks from the internal tasks list asynchronously. Uses ColorManager to display colored output.
  * Prints the task ID, description, status (done or not done), creation time, and if done, completion time.
  * Created time is displayed in BLUE, completed time (if applicable) is displayed in GREEN.
+ *
+ * @return Future object for the list tasks operation.
  */
-void TaskManager::listTasks() const
+future<void> TaskManager::listTasksAsync() const
 {
-    for (const auto &task : tasks)
-    {
-        // Using BLUE for task ID and description
-        std::cout << ColorManager::BLUE << task.getId() << ". " << task.getDescription() << ColorManager::RESET;
-
-        // Using GREEN for done tasks and YELLOW for not done tasks
-        if (task.isDone())
+    return async(launch::async, [this]()
+                 {
+        try
         {
-            std::cout << ColorManager::GREEN << " [Done]" << ColorManager::RESET;
-        }
-        else
-        {
-            std::cout << ColorManager::YELLOW << " [Not Done]" << ColorManager::RESET;
-        }
+            auto futureTasks = database.getTasksAsync();
+            futureTasks.wait();
+            auto tasks = futureTasks.get();
 
-        // Display creation time
-        std::time_t createdTime = task.getCreatedTime();
-        std::tm created_tm = *std::localtime(&createdTime);
-        std::cout << " (Created: " << ColorManager::GREEN << std::put_time(&created_tm, "%Y-%m-%d %H:%M:%S") << ColorManager::RESET;
+            for (const auto &task : tasks)
+            {
+                // Using BLUE for task ID and description
+                std::cout << ColorManager::BLUE << task.getId() << ". " << task.getDescription() << ColorManager::RESET;
 
-        // Display completion time if task is done
-        if (task.isDone())
-        {
-            std::time_t completedTime = task.getCompletedTime();
-            std::tm completed_tm = *std::localtime(&completedTime);
-            std::cout << ColorManager::GREEN << " (Completed: " << std::put_time(&completed_tm, "%Y-%m-%d %H:%M:%S") << ")" << ColorManager::RESET;
+                // Using GREEN for done tasks and YELLOW for not done tasks
+                if (task.isDone())
+                {
+                    std::cout << ColorManager::GREEN << " [Done]" << ColorManager::RESET;
+                }
+                else
+                {
+                    std::cout << ColorManager::YELLOW << " [Not Done]" << ColorManager::RESET;
+                }
+
+                // Display creation time
+                std::time_t createdTime = task.getCreatedTime();
+                std::tm created_tm = *std::localtime(&createdTime);
+                std::cout << " (Created: " << ColorManager::GREEN << std::put_time(&created_tm, "%Y-%m-%d %H:%M:%S") << ColorManager::RESET;
+
+                // Display completion time if task is done
+                if (task.isDone())
+                {
+                    std::time_t completedTime = task.getCompletedTime();
+                    std::tm completed_tm = *std::localtime(&completedTime);
+                    std::cout << ColorManager::GREEN << " (Completed: " << std::put_time(&completed_tm, "%Y-%m-%d %H:%M:%S") << ")" << ColorManager::RESET;
+                }
+                std::cout << '\n';
+            }
         }
-        std::cout << '\n';
-    }
+        catch (const std::exception &e)
+        {
+            std::cerr << "Error listing tasks asynchronously: " << e.what() << std::endl;
+            throw; // Rethrow the exception to propagate it further
+        } });
 }
 
 /**
- * @brief Mark a task as done using its ID.
+ * @brief Asynchronous marking of a task as done using its ID.
  *
- * Marks a task as done in the database using the Database object and updates the internal tasks list.
+ * Marks a task as done in the database asynchronously using the Database object and updates the internal tasks list.
  *
  * @param id ID of the task to be marked as done.
+ * @return Future object for the mark task done operation.
  */
-void TaskManager::markTaskDone(int id)
+future<void> TaskManager::markTaskDoneAsync(int id)
 {
-    if (id < 1 || id > tasks.size())
-    {
-        std::cerr << "Invalid task ID." << std::endl;
-        return;
-    }
-    database.markTaskDone(id);
-    tasks = database.getTasks();
+    return async(launch::async, [this, id]()
+                 {
+        try
+        {
+            // Mark task as done asynchronously
+            auto future = database.markTaskDoneAsync(id);
+            future.wait(); // Wait for the asynchronous operation to complete
+            // Update tasks asynchronously after marking as done
+            auto futureTasks = database.getTasksAsync();
+            futureTasks.wait();
+            tasks = futureTasks.get();
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << "Error marking task as done asynchronously: " << e.what() << std::endl;
+            throw; // Rethrow the exception to propagate it further
+        } });
 }
 
 /**
- * @brief Delete a task using its ID.
+ * @brief Asynchronous deletion of a task using its ID.
  *
- * Deletes a task from the database using the Database object and updates the internal tasks list.
+ * Deletes a task from the database asynchronously using the Database object and updates the internal tasks list.
  *
  * @param id ID of the task to be deleted.
+ * @return Future object for the delete task operation.
  */
-void TaskManager::deleteTask(int id)
+future<void> TaskManager::deleteTaskAsync(int id)
 {
-    database.deleteTask(id);
-    tasks = database.getTasks();
+    return async(launch::async, [this, id]()
+                 {
+        try
+        {
+            // Delete task asynchronously
+            auto future = database.deleteTaskAsync(id);
+            future.wait(); // Wait for the asynchronous operation to complete
+            // Update tasks asynchronously after deletion
+            auto futureTasks = database.getTasksAsync();
+            futureTasks.wait();
+            tasks = futureTasks.get();
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << "Error deleting task asynchronously: " << e.what() << std::endl;
+            throw; // Rethrow the exception to propagate it further
+        } });
 }
 
 /**
- * @brief Clear all tasks from the database and reset the internal tasks list.
+ * @brief Asynchronous clearing of all tasks from the database and reset of the internal tasks list.
  *
- * Deletes all tasks from the database using the Database object and clears the internal tasks list.
+ * Deletes all tasks from the database using the Database object asynchronously and clears the internal tasks list.
+ *
+ * @return Future object for the clear all data operation.
  */
-void TaskManager::clearAllData()
+future<void> TaskManager::clearAllDataAsync()
 {
-    for (const auto &task : tasks)
-    {
-        database.deleteTask(task.getId());
-    }
-    tasks.clear();
+    return async(launch::async, [this]()
+                 {
+        try
+        {
+            auto future = database.clearAllDataAsync();
+            future.wait(); // Wait for the asynchronous operation to complete
+            // Update tasks asynchronously after clearing all data
+            auto futureTasks = database.getTasksAsync();
+            futureTasks.wait();
+            tasks = futureTasks.get();
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << "Error clearing all data asynchronously: " << e.what() << std::endl;
+            throw; // Rethrow the exception to propagate it further
+        } });
 }
