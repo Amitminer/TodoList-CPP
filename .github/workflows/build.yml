@@ -67,14 +67,14 @@ jobs:
         with:
           name: todolist-windows
           path: todolist-windows
-      - name: Create zip files
+      - name: Create tar files
         run: |
-          zip -rj todolist-windows.zip todolist-windows/
-          zip -rj todolist-linux.zip todolist-linux/
+          tar -czvf todolist-linux.tar.gz -C todolist-linux .
+          tar -czvf todolist-windows.tar.gz -C todolist-windows .
           
       - uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: "todolist-linux.zip,todolist-windows.zip"
+          artifacts: "todolist-linux.tar.gz,todolist-windows.tar.gz"
           token: ${{ secrets.PAT_TOKEN }}
           name: Build v${{ github.run_number }}
           tag: v${{ github.run_number }}
