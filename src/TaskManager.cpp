@@ -15,7 +15,8 @@ using std::string;
  *
  * @param db Reference to the Database object.
  */
-TaskManager::TaskManager(Database &db) : database(db) {
+TaskManager::TaskManager(Database &db) : database(db)
+{
     auto futureTasks = database.getTasksAsync();
     futureTasks.wait();
     tasks = futureTasks.get();
@@ -29,7 +30,8 @@ TaskManager::TaskManager(Database &db) : database(db) {
  * @param description Description of the task to be added.
  * @return Future object for the add task operation.
  */
-future<void> TaskManager::addTaskAsync(const string &description) {
+future<void> TaskManager::addTaskAsync(const string &description)
+{
     return async(launch::async, [this, description]()
                  {
         try {
@@ -56,7 +58,8 @@ future<void> TaskManager::addTaskAsync(const string &description) {
  *
  * @return Future object for the list tasks operation.
  */
-future<void> TaskManager::listTasksAsync() const {
+future<void> TaskManager::listTasksAsync() const
+{
     return async(launch::async, [this]()
                  {
         try {
@@ -104,7 +107,8 @@ future<void> TaskManager::listTasksAsync() const {
  * @param id ID of the task to be marked as done.
  * @return Future object for the mark task done operation.
  */
-future<void> TaskManager::markTaskDoneAsync(int id) {
+future<void> TaskManager::markTaskDoneAsync(int id)
+{
     return async(launch::async, [this, id]()
                  {
         try {
@@ -130,7 +134,8 @@ future<void> TaskManager::markTaskDoneAsync(int id) {
  * @param id ID of the task to be deleted.
  * @return Future object for the delete task operation.
  */
-future<void> TaskManager::deleteTaskAsync(int id) {
+future<void> TaskManager::deleteTaskAsync(int id)
+{
     return async(launch::async, [this, id]()
                  {
         try {
@@ -155,7 +160,8 @@ future<void> TaskManager::deleteTaskAsync(int id) {
  *
  * @return Future object for the clear all data operation.
  */
-future<void> TaskManager::clearAllDataAsync() {
+future<void> TaskManager::clearAllDataAsync()
+{
     return async(launch::async, [this]()
                  {
         try {

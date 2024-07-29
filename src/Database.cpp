@@ -15,7 +15,8 @@ using std::string;
  *
  * @param dbFilename Filename of the SQLite database.
  */
-Database::Database(const string &dbFilename) : db(nullptr) {
+Database::Database(const string &dbFilename) : db(nullptr)
+{
     // Constructor initializes the database asynchronously
     initializeAsync(dbFilename).get(); // Wait for initialization to complete
 }
@@ -23,7 +24,8 @@ Database::Database(const string &dbFilename) : db(nullptr) {
 /**
  * @brief Destructor for cleaning up resources associated with the Database object.
  */
-Database::~Database() {
+Database::~Database()
+{
     // Destructor finalizes the database asynchronously
     finalizeAsync().get(); // Ensure database is properly finalized
 }
@@ -34,7 +36,8 @@ Database::~Database() {
  * @param dbFilename Filename of the SQLite database.
  * @return Future object for the initialization task.
  */
-future<void> Database::initializeAsync(const string &dbFilename) {
+future<void> Database::initializeAsync(const string &dbFilename)
+{
     return async(launch::async, [this, dbFilename]()
                  {
         try {
@@ -52,7 +55,8 @@ future<void> Database::initializeAsync(const string &dbFilename) {
  *
  * @return Future object for the finalization task.
  */
-future<void> Database::finalizeAsync() {
+future<void> Database::finalizeAsync()
+{
     return async(launch::async, [this]()
                  {
         try {
@@ -70,7 +74,8 @@ future<void> Database::finalizeAsync() {
  * @param description Description of the task to be added.
  * @return Future object for the add task operation.
  */
-future<void> Database::addTaskAsync(const string &description) {
+future<void> Database::addTaskAsync(const string &description)
+{
     return async(launch::async, [this, description]()
                  {
         try {
@@ -91,7 +96,8 @@ future<void> Database::addTaskAsync(const string &description) {
  *
  * @return Future object for the get tasks operation.
  */
-future<std::vector<Task>> Database::getTasksAsync() const {
+future<std::vector<Task>> Database::getTasksAsync() const
+{
     return async(launch::async, [this]() -> std::vector<Task>
                  {
         std::vector<Task> tasks;
@@ -119,7 +125,8 @@ future<std::vector<Task>> Database::getTasksAsync() const {
  * @param id ID of the task to be marked as done.
  * @return Future object for the mark task done operation.
  */
-future<void> Database::markTaskDoneAsync(int id) {
+future<void> Database::markTaskDoneAsync(int id)
+{
     return async(launch::async, [this, id]()
                  {
         try {
@@ -141,7 +148,8 @@ future<void> Database::markTaskDoneAsync(int id) {
  * @param id ID of the task to be deleted.
  * @return Future object for the delete task operation.
  */
-future<void> Database::deleteTaskAsync(int id) {
+future<void> Database::deleteTaskAsync(int id)
+{
     return async(launch::async, [this, id]()
                  {
         try {
@@ -160,7 +168,8 @@ future<void> Database::deleteTaskAsync(int id) {
  *
  * @return Future object for the clear all data operation.
  */
-future<void> Database::clearAllDataAsync() {
+future<void> Database::clearAllDataAsync()
+{
     return async(launch::async, [this]()
                  {
         try {

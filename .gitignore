@@ -37,5 +37,9 @@ debug.bat
 
 build
 tasks.db
-tasks2.db
+tasks_bench.db
+debug/*
+debug/tasks.db
+
+vcpkg_installed
 debug
