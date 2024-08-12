@@ -47,7 +47,7 @@ jobs:
           cd vcpkg
           .\bootstrap-vcpkg.bat
           .\vcpkg.exe integrate install
-          .\vcpkg.exe install sqlitecpp
+          .\vcpkg.exe install sqlitecpp fmt benchmark
       - name: Build
         run: .\build.bat
       - uses: actions/upload-artifact@v4
