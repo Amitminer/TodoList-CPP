@@ -26,16 +26,20 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Find the built executable
-EXECUTABLE=$(find build -type f -executable -name "todolist")
-
-if [ -z "$EXECUTABLE" ]; then
+# Check for the executable in both the build and root directories
+if [ -f "./todolist" ]; then
+    EXECUTABLE="./todolist"
+elif [ -f "build/todolist" ]; then
+    EXECUTABLE="build/todolist"
+else
     echo "Executable not found."
     exit 1
 fi
 
 # Move the built executable to the root directory
-echo "Moving $EXECUTABLE to the root directory..."
-mv "$EXECUTABLE" .
+if [ "$EXECUTABLE" != "./todolist" ]; then
+    echo "Moving $EXECUTABLE to the root directory..."
+    mv "$EXECUTABLE" .
+fi
 
 echo "Build and move completed successfully."
