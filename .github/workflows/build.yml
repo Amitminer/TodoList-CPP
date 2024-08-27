@@ -55,7 +55,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: todolist-windows
-          path: ${{ github.workspace }}\build\Release\todolist.exe
+          path: ${{ github.workspace}}\Release\todolist.exe
 
   create-release:
     needs: [build-and-release-linux, build-and-release-windows]
